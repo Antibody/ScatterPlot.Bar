@@ -1,0 +1,19 @@
+ggplot(data, aes(x = category, y = value, fill = "blue")) +
+    geom_bar(stat = "identity", color = "white") +
+    scale_fill_manual(values = my_color, guide = "none") +
+    labs(title = "Value by Category and Group", x = "Category", y = "Value") +
+    theme_minimal() +
+    theme(
+        axis.text = element_blank(),
+        axis.title = element_text(size = 16, face = "bold"),
+        axis.title.y = element_text(size = 18),
+        plot.title = element_text(hjust = 0.5, size = 16)
+    ) +
+    geom_text(aes(label = category, y = value / 2), color = "white", size = 6) +
+    annotate("text", x = 1.5, y = 45, label = "Group 1", color = my_color, size = 6, fontface = "bold") +
+    annotate("segment", x = 0.5, xend = 2.4, y = 42, yend = 42, size = 1, color = my_color) +
+    annotate("text", x = 3.5, y = 45, label = "Group 2", color = my_color, size = 6, fontface = "bold") +
+    annotate("segment", x = 2.5, xend = 4.4, y = 42, yend = 42, size = 1, color = my_color) +
+    annotate("text", x = 5.5, y = 45, label = "Group 3", color = my_color, size = 6, fontface = "bold") +
+    annotate("segment", x = 4.5, xend = 6.4, y = 42, yend = 42, size = 1, color = my_color) +
+    NULL
