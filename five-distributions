@@ -1,0 +1,50 @@
+library(reshape2)
+library(ggplot2)
+
+# Create four datasets with similar means and standard errors but different distributions
+set.seed(123)
+n <- 200
+mu <- 10
+sigma <- 5
+
+# Normal distribution
+data1 <- rnorm(n/4, mean = mu, sd = sigma*2)
+
+# Uniform distribution
+data2 <- runif(n/2, min = mu - sqrt(3) * sigma*2, max = mu + sqrt(3) * sigma*2)
+
+# Exponential distribution
+data3 <- rexp(n, rate = 1/mu)
+
+# Gamma distribution
+data4 <- rgamma(n, shape = 6, rate = 0.555)
+
+# Bimodal distribution
+data5up <- c(rnorm(n/4, mean = mu + 6.5, sd = 1))
+data5down <- c(rnorm(n/4, mean = mu -6, sd = 1))
+data5 <- c(data5up, data5down)
+
+# Make a table with five columns
+data <-cbind(data1,data2,data3,data4,data5) 
+datID <- as.data.frame(data)
+colnames(datID) <- c("Normal", "Uniform", "Exponential", "Gamma", "Bimodal")
+datID$id = 1:dim(datID)[1]
+datIDmelt <- melt(datID, id.vars="id")
+colnames(datIDmelt) <- c("id", "distribution", "value")
+
+ggplot(datIDmelt, aes(x = distribution, y = value, fill=distribution)) +
+  
+  # Add a bar plot of means
+  stat_summary(fun = mean, geom = "bar") +
+  
+  # Add error bars representing the standard error of the mean
+  stat_summary(fun.data = mean_se, geom = "errorbar", width = 0.2) +
+ 
+  labs(title =  "Comparison of Distributions with Similar Means and Standard Errors") +
+  theme_minimal() +
+  theme(axis.text=element_text(size=12), 
+        axis.title=element_text(size=12,face="bold"),
+        legend.position = "none") +
+  theme(axis.title.x = element_text(size=14),
+        axis.title.y = element_text(size=14)) +
+  theme(plot.title = element_text(hjust = 0.5, size=16))
