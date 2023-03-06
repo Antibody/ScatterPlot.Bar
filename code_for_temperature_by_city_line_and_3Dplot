@@ -1,0 +1,55 @@
+# An example dataset of average monthly temperature readings in different cities
+city <- c("New York", "London", "Tokyo", "Paris", "Sydney")
+Jan <- c(0.3, 3.8, 7.9, 4.6, 25.8)
+Feb <- c(2.4, 4.4, 8.2, 6.2, 25.6)
+Mar <- c(6.3, 6.7, 11.3, 9.6, 24.7)
+Apr <- c(12.2, 9.9, 15.6, 12.2, 22.2)
+May <- c(18.2, 14.5, 20.7, 16.5, 19.3)
+Jun <- c(23.3, 17.7, 24.5, 20.1, 16.8)
+
+library(tidyr)
+library(ggplot2)
+library(viridis) # viridis color palette is color-blindness compatible
+
+temp_data <- data.frame(city, Jan, Feb, Mar, Apr, May, Jun)
+
+temp_data_long <- gather(temp_data, key = "month", value = "temp", -city)
+
+# Convert "month" to a factor with ordered levels
+temp_data_long$month <- factor(temp_data_long$month, levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun"), ordered = TRUE)
+
+# Convert "city" to a factor with ordered levels
+temp_data_long$city <- factor(temp_data_long$city, levels = c("New York", "London", "Tokyo", "Paris", "Sydney"), ordered = TRUE)
+
+ggplot(temp_data_long, aes(x = month, y = temp, group = city, color = city)) +
+    geom_line(linewidth=3) +
+    scale_color_viridis(discrete = TRUE) +   # Add the viridis color palette
+    labs(title = "Average Monthly Temperature Readings (Jan-Jun) by City",
+         x = "Month",
+         y = "Temperature (°C)",
+         color = "") +   # Set the color legend title to an empty string
+    theme_minimal() +
+    theme(
+        axis.text = element_text(size = 16),
+        axis.title = element_text(size = 16, face = "bold"),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size = 18),
+        plot.title = element_text(hjust = 0.5, size = 16),
+        legend.position = "bottom"
+    )
+    
+    # Poor data visualization practice: 3D Surface plot
+library(plotly)
+
+plot_ly(z = as.matrix(temp_data[, 2:7]),
+        x = colnames(temp_data[, 2:7]),
+        y = temp_data$city,
+        type = "surface",
+        colors = "RdYlBu",
+        colorbar = list(title = "Temperature (°C)")) %>%
+    layout(title = list(text = "Average Monthly Temperature Readings (Jan-Jun)",
+                        font = list(size = 22)),
+           margin = list(l = 50, r = 50, b = 50, t = 100),
+           scene = list(xaxis = list(title = "Month"),
+                        yaxis = list(title = "City"),
+                        zaxis = list(title = "Temperature (°C)")))
