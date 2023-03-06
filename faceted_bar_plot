@@ -1,0 +1,35 @@
+library(ggplot2)
+library(dplyr)
+
+data <- data.frame(
+    Region = c("North", "South", "East", "West"),
+    Sales = c(100, 200, 150, 175),
+    Profit = c(50, 100, 75, 80)
+)
+
+data_melt <- data %>% 
+
+# melt data for ggplot. "group" is either sales or profits
+    tidyr::gather(key = "group", value = "value", -Region) 
+
+ggplot(data_melt, aes(x = Region, y = value, fill = group)) +
+    geom_col(position = "dodge") +
+
+    # nrow = 1 to show facets next to each other
+    facet_wrap(~ group, nrow = 1) + 
+    labs(title = "Sales and Profits by Region",
+         y="USD") +
+    scale_fill_manual(values = c("#00BA38", "#619CFF"), 
+                       name = "",
+                      labels = c( "Profits", "Sales")) +
+    theme_minimal() +
+    theme(
+        axis.text = element_text(size = 16),
+        axis.title = element_text(size = 16, face = "bold"),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size = 18),
+          # Increase facet title size
+        strip.text = element_text(size = 18, face = "bold"),  
+        plot.title = element_text(hjust = 0.5, size = 16),
+        legend.position = "bottom"
+    )
