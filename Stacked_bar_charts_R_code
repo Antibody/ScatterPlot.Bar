@@ -1,0 +1,20 @@
+library(ggplot2)
+data <- data.frame(
+  region = c("North", "South", "East", "West"),
+  sales = c(100, 200, 150, 175),
+  profit = c(50, 100, 75, 80)
+)
+ggplot(data, aes(x = region)) +
+    geom_col(aes(y = sales, fill = "Sales"), position = "dodge") +
+    geom_col(aes(y = profit, fill = "Profit"), position = "dodge") +
+    scale_fill_manual(name = "", values = c("Sales" = "#F8766D", "Profit" = "#00BA38")) +
+    labs(title = "Sales and Profit by Region") +
+    theme_minimal() +
+    theme(
+        axis.text = element_text(size = 16),
+        axis.title = element_text(size = 16, face = "bold"),
+        axis.title.x = element_text(size = 18),
+        axis.title.y = element_text(size = 18),
+        plot.title = element_text(hjust = 0.5, size = 16),
+        legend.position = "bottom"
+    )
